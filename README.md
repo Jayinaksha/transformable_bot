@@ -47,7 +47,7 @@ A ROS 2 quadcopter robot with dynamic mode switching capabilities - seamlessly t
 # Build tools
 
 ### Installation
-```bash
+```
 # Create workspace
 mkdir -p ~/transformable_bot_ws/src
 cd ~/transformable_bot_ws/src
@@ -62,7 +62,7 @@ source install/setup.bash
 ```
 
 ### Launch Simulation
-```bash
+```
 # Launch robot in Gazebo
 ros2 launch transformable_bot view_robot.launch.py
 
@@ -73,7 +73,7 @@ ros2 launch transformable_bot rviz_display.launch.py
 ## 🎮 Usage
 
 ### Mode Switching
-```bash
+```
 # Switch to rover mode (flexible joints)
 ros2 service call /robot/front_right/mode_switch std_srvs/srv/SetBool "{data: false}"
 ros2 service call /robot/front_left/mode_switch std_srvs/srv/SetBool "{data: false}"
@@ -88,7 +88,7 @@ ros2 service call /robot/back_left/mode_switch std_srvs/srv/SetBool "{data: true
 ```
 
 ### Motor Control
-```bash
+```
 # Control individual motors (speed in RPM)
 ros2 topic pub /robot/front_right/motor/velocity std_msgs/msg/Float64 "{data: 50.0}" --once
 ros2 topic pub /robot/front_left/motor/velocity std_msgs/msg/Float64 "{data: 50.0}" --once
@@ -103,7 +103,7 @@ ros2 topic pub /robot/back_left/motor/velocity std_msgs/msg/Float64 "{data: 0.0}
 ```
 
 ### Monitor Status
-```bash
+```
 # Check mode status
 ros2 topic echo /robot/front_right/mode_status
 ros2 topic echo /robot/front_left/mode_status
@@ -202,7 +202,7 @@ transformable_bot/
 5. **Open** a Pull Request
 
 ### Building from Source
-```bash
+```
 # Clone with all dependencies
 git clone --recursive https://github.com/Jayinaksha/transformable-bot.git
 
@@ -221,13 +221,13 @@ colcon test --packages-select transformable_bot
 ### Common Issues
 
 **Problem**: Plugin not loading
-```bash
+```
 # Solution: Check plugin path
 export GZ_SIM_SYSTEM_PLUGIN_PATH=$GZ_SIM_SYSTEM_PLUGIN_PATH:~/transformable_bot_ws/install/transformable_bot/lib
 ```
 
 **Problem**: Mode switch not working
-```bash
+```
 # Solution: Check service availability
 ros2 service list | grep mode_switch
 
@@ -236,7 +236,7 @@ ros2 topic echo /robot/front_right/mode_status
 ```
 
 **Problem**: Motor not responding
-```bash
+```
 # Solution: Check motor topics
 ros2 topic list | grep motor
 
