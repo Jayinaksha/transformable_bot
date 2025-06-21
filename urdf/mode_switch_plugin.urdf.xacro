@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  
+  <!-- MODE SWITCH PLUGINS FOR EACH ARM -->
+   <!-- REPLACE WITH NEW DYNAMIC JOINT MODE SWITCH PLUGINS -->
+<gazebo>
+  <plugin name="front_right_mode_switch" filename="libdynamic_joint_mode_switch_plugin.so">
+    <arm_name>front_right</arm_name>
+    <service_name>/robot/front_right/mode_switch</service_name>
+  </plugin>
+</gazebo>
+
+<gazebo>
+  <plugin name="back_right_mode_switch" filename="libdynamic_joint_mode_switch_plugin.so">
+    <arm_name>back_right</arm_name>
+    <service_name>/robot/back_right/mode_switch</service_name>
+  </plugin>
+</gazebo>
+
+<gazebo>
+  <plugin name="back_left_mode_switch" filename="libdynamic_joint_mode_switch_plugin.so">
+    <arm_name>back_left</arm_name>
+    <service_name>/robot/back_left/mode_switch</service_name>
+  </plugin>
+</gazebo>
+
+<gazebo>
+  <plugin name="front_left_mode_switch" filename="libdynamic_joint_mode_switch_plugin.so">
+    <arm_name>front_left</arm_name>
+    <service_name>/robot/front_left/mode_switch</service_name>
+  </plugin>
+</gazebo>
+</robot>

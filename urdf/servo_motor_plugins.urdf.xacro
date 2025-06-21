@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- FRONT RIGHT ARM PLUGINS -->
+  <!-- Front Right -->
+<gazebo>
+  <plugin name="front_right_servo_y" filename="libservo_y_plugin.so">
+    <arm_name>front_right</arm_name>
+    <kp>1000.0</kp>
+    <kd>100.0</kd>
+  </plugin>
+</gazebo>
+
+<!-- Front Left -->
+<gazebo>
+  <plugin name="front_left_servo_y" filename="libservo_y_plugin.so">
+    <arm_name>front_left</arm_name>
+    <kp>1000.0</kp>
+    <kd>100.0</kd>
+  </plugin>
+</gazebo>
+
+<!-- Back Right -->
+<gazebo>
+  <plugin name="back_right_servo_y" filename="libservo_y_plugin.so">
+    <arm_name>back_right</arm_name>
+    <kp>1000.0</kp>
+    <kd>100.0</kd>
+  </plugin>
+</gazebo>
+
+<!-- Back Left -->
+<gazebo>
+  <plugin name="back_left_servo_y" filename="libservo_y_plugin.so">
+    <arm_name>back_left</arm_name>
+    <kp>1000.0</kp>
+    <kd>100.0</kd>
+  </plugin>
+</gazebo>
+
+  <!-- Front Right -->
+<gazebo>
+  <plugin name="front_right_servo_x" filename="libservo_x_plugin.so">
+    <arm_name>front_right</arm_name>
+    <kp>1000.0</kp>
+    <kd>100.0</kd>
+  </plugin>
+</gazebo>
+
+<!-- Front Left -->
+<gazebo>
+  <plugin name="front_left_servo_x" filename="libservo_x_plugin.so">
+    <arm_name>front_left</arm_name>
+    <kp>1000.0</kp>
+    <kd>100.0</kd>
+  </plugin>
+</gazebo>
+
+<!-- Back Right -->
+<gazebo>
+  <plugin name="back_right_servo_x" filename="libservo_x_plugin.so">
+    <arm_name>back_right</arm_name>
+    <kp>1000.0</kp>
+    <kd>100.0</kd>
+  </plugin>
+</gazebo>
+
+<!-- Back Left -->
+<gazebo>
+  <plugin name="back_left_servo_x" filename="libservo_x_plugin.so">
+    <arm_name>back_left</arm_name>
+    <kp>1000.0</kp>
+    <kd>100.0</kd>
+  </plugin>
+</gazebo>
+<!-- Front Right Motor -->
+<gazebo>
+  <plugin name="front_right_motor" filename="libmotor_plugin.so">
+    <arm_name>front_right</arm_name>
+    <max_velocity>2000.0</max_velocity>
+  </plugin>
+</gazebo>
+
+<!-- Front Left Motor -->
+<gazebo>
+  <plugin name="front_left_motor" filename="libmotor_plugin.so">
+    <arm_name>front_left</arm_name>
+    <max_velocity>2000.0</max_velocity>
+  </plugin>
+</gazebo>
+
+<!-- Back Right Motor -->
+<gazebo>
+  <plugin name="back_right_motor" filename="libmotor_plugin.so">
+    <arm_name>back_right</arm_name>
+    <max_velocity>2000.0</max_velocity>
+  </plugin>
+</gazebo>
+
+<!-- Back Left Motor -->
+<gazebo>
+  <plugin name="back_left_motor" filename="libmotor_plugin.so">
+    <arm_name>back_left</arm_name>
+    <max_velocity>2000.0</max_velocity>
+  </plugin>
+</gazebo>
+
+</robot>

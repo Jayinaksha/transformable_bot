@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Include the base ring_system macro -->
+  <xacro:include filename="$(find transformable_bot)/urdf/ring_system.urdf.xacro"/>
+
+  <xacro:property name="rod_length" value="0.155"/>
+  <xacro:property name="rod_radius" value="0.004"/>
+  <xacro:property name="rod_tilt" value="1.309"/>
+  <xacro:property name="rod_offset" value="0.0058"/>
+
+ <xacro:property name="hub_radius" value="0.015"/>
+  <xacro:property name="hub_length" value="0.05"/>
+
+
+  <!-- RING + 9 RODS ATTACHMENT AT ELEVATED HUB -->
+  <xacro:macro name="ring_attached" params="name parent_link offset_x offset_y offset_z">
+
+    <!-- Materials -->
+    <material name="${name}_hub9_material">
+      <color rgba="0.6 0.6 0.6 1.0"/>
+    </material>
+    <material name="${name}_rod_material">
+      <color rgba="0.3 0.3 0.3 1.0"/>
+    </material>
+
+    <!-- 9-rods hub with visual cylinder -->
+    <link name="${name}_hub_9rods">
+      <visual>
+        <origin xyz="0 0 ${hub_length/2}" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="${hub_radius}" length="${hub_length}"/>
+        </geometry>
+        <material name="${name}_hub9_material"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 ${hub_length/2}" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="${hub_radius}" length="${hub_length}"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.01"/>
+        <inertia ixx="0.0001" ixy="0" ixz="0"
+                 iyy="0.0001" iyz="0" izz="0.0001"/>
+      </inertial>
+    </link>
+
+    <!-- Fixed joint to lift hub above propeller -->
+    <joint name="${name}_hub_9rods_joint" type="continuous">
+      <parent link="${parent_link}"/>
+      <child  link="${name}_hub_9rods"/>
+      <origin xyz="${offset_x} ${offset_y} ${offset_z}" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <dynamics damping="0.0" friction="0.0"/>
+    </joint>
+
+    <!-- 360° / 9 rods = 40° step in radians -->
+    <xacro:property name="rod_angle_step" value="0.698132"/>
+
+    <!-- Macro: one rod angled into hub -->
+    <xacro:macro name="rod" params="i angle">
+      <!-- radial end position -->
+      <xacro:property name="x_r" value="${0.18 * cos(angle)}"/>
+      <xacro:property name="y_r" value="${0.18 * sin(angle)}"/>
+
+      <!-- rod link (cylinder) -->
+      <link name="${name}_rod_${i}">
+        <visual>
+          <origin xyz="0 0 ${9*rod_length/16 + rod_offset}" rpy="0 0 0"/>
+          <geometry>
+            <cylinder radius="${rod_radius}" length="${rod_length}"/>
+          </geometry>
+          <material name="${name}_rod_material"/>
+        </visual>
+        <collision>
+          <origin xyz="0 0 ${9*rod_length/16 + rod_offset}" rpy="0 0 0"/>
+          <geometry>
+            <cylinder radius="${rod_radius}" length="${rod_length}"/>
+          </geometry>
+        </collision>
+        <inertial>
+          <mass value="0.0005"/>
+          <inertia ixx="0.0000005" ixy="0" ixz="0"
+                   iyy="0.0000005" iyz="0" izz="0.0000005"/>
+        </inertial>
+      </link>
+
+      <!-- joint rotates rod into radial plane and positions at hub center -->
+      <joint name="${name}_rod_${i}_joint" type="fixed">
+        <parent link="${name}_hub_9rods"/>
+        <child  link="${name}_rod_${i}"/>
+        <!-- rotate X axis → Y (1.5708), then yaw by angle -->
+        <origin xyz="${x_r} ${y_r} 0" rpy="0 -${rod_tilt} ${angle}"/>
+      </joint>
+    </xacro:macro>
+
+    <!-- Create 9 rods at 40° increments -->
+    <xacro:rod i="1" angle="${rod_angle_step * 0}"/>
+    <xacro:rod i="2" angle="${rod_angle_step * 1}"/>
+    <xacro:rod i="3" angle="${rod_angle_step * 2}"/>
+    <xacro:rod i="4" angle="${rod_angle_step * 3}"/>
+    <xacro:rod i="5" angle="${rod_angle_step * 4}"/>
+    <xacro:rod i="6" angle="${rod_angle_step * 5}"/>
+    <xacro:rod i="7" angle="${rod_angle_step * 6}"/>
+    <xacro:rod i="8" angle="${rod_angle_step * 7}"/>
+    <xacro:rod i="9" angle="${rod_angle_step * 8}"/>
+
+    <!-- Attach the 90-segment ring at the same elevated hub -->
+    <xacro:ring_system 
+      name="${name}_ring" 
+      parent_link="${name}_hub_9rods" 
+      offset_x="0" offset_y="0" offset_z="0"/>
+
+  </xacro:macro>
+</robot>

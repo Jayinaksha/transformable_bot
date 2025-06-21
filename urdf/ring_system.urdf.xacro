@@ -1,0 +1,157 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- ENHANCED RING SYSTEM - 90 SEGMENTS WITH MACRO FUNCTIONS -->
+  <xacro:macro name="ring_system" params="name parent_link offset_x offset_y offset_z">
+
+    <!-- Ring radius = 0.18m-->
+    <!-- STEP SIZE: 360° / 90 = 4° in radians -->
+    <xacro:property name="angle_step" value="0.0698132"/>
+
+    <!-- UNIQUE MATERIAL FOR ALL RING SEGMENTS -->
+    <material name="${name}_ring_material">
+      <color rgba="0.2 0.2 0.2 1.0"/>
+    </material>
+
+    <!-- CENTRAL HUB (INVISIBLE CONNECTION) -->
+    <link name="${name}_hub">
+      <inertial>
+        <mass value="0.015"/>
+        <inertia ixx="0.0002" ixy="0" ixz="0"
+                 iyy="0.0002" iyz="0" izz="0.0002"/>
+      </inertial>
+    </link>
+
+    <!-- MACRO TO DEFINE ONE RING SEGMENT + ITS FIXED JOINT -->
+    <xacro:macro name="ring_segment" params="segment_num angle">
+      <xacro:property name="x_pos" value="${0.18 * cos(angle)}"/>
+      <xacro:property name="y_pos" value="${0.18 * sin(angle)}"/>
+
+      <link name="${name}_ring_seg_${segment_num}">
+        <visual>
+          <geometry>
+            <box size="0.02 0.012 0.025"/>
+          </geometry>
+          <material name="${name}_ring_material"/>
+        </visual>
+        <collision>
+          <geometry>
+            <box size="0.02 0.012 0.025"/>
+          </geometry>
+        </collision>
+        <inertial>
+          <mass value="0.001"/>
+          <inertia ixx="0.000002" ixy="0" ixz="0"
+                   iyy="0.000002" iyz="0" izz="0.000002"/>
+        </inertial>
+      </link>
+
+      <joint name="${name}_ring_seg_${segment_num}_joint" type="fixed">
+        <parent link="${name}_hub"/>
+        <child  link="${name}_ring_seg_${segment_num}"/>
+        <origin xyz="${x_pos} ${y_pos} 0" rpy="0 0 ${angle}"/>
+      </joint>
+    </xacro:macro>
+
+    <!-- HUB-TO-PARENT JOINT -->
+    <joint name="${name}_hub_joint" type="fixed">
+      <parent link="${parent_link}"/>
+      <child  link="${name}_hub"/>
+      <origin xyz="${offset_x} ${offset_y} ${offset_z}" rpy="0 0 0"/>
+    </joint>
+
+    <!-- CREATE 90 RING SEGMENTS AT 4° INTERVALS -->
+    <xacro:ring_segment segment_num="1"  angle="${angle_step * 0}"/>
+    <xacro:ring_segment segment_num="2"  angle="${angle_step * 1}"/>
+    <xacro:ring_segment segment_num="3"  angle="${angle_step * 2}"/>
+    <xacro:ring_segment segment_num="4"  angle="${angle_step * 3}"/>
+    <xacro:ring_segment segment_num="5"  angle="${angle_step * 4}"/>
+    <xacro:ring_segment segment_num="6"  angle="${angle_step * 5}"/>
+    <xacro:ring_segment segment_num="7"  angle="${angle_step * 6}"/>
+    <xacro:ring_segment segment_num="8"  angle="${angle_step * 7}"/>
+    <xacro:ring_segment segment_num="9"  angle="${angle_step * 8}"/>
+    <xacro:ring_segment segment_num="10" angle="${angle_step * 9}"/>
+    <xacro:ring_segment segment_num="11" angle="${angle_step * 10}"/>
+    <xacro:ring_segment segment_num="12" angle="${angle_step * 11}"/>
+    <xacro:ring_segment segment_num="13" angle="${angle_step * 12}"/>
+    <xacro:ring_segment segment_num="14" angle="${angle_step * 13}"/>
+    <xacro:ring_segment segment_num="15" angle="${angle_step * 14}"/>
+    <xacro:ring_segment segment_num="16" angle="${angle_step * 15}"/>
+    <xacro:ring_segment segment_num="17" angle="${angle_step * 16}"/>
+    <xacro:ring_segment segment_num="18" angle="${angle_step * 17}"/>
+    <xacro:ring_segment segment_num="19" angle="${angle_step * 18}"/>
+    <xacro:ring_segment segment_num="20" angle="${angle_step * 19}"/>
+    <xacro:ring_segment segment_num="21" angle="${angle_step * 20}"/>
+    <xacro:ring_segment segment_num="22" angle="${angle_step * 21}"/>
+    <xacro:ring_segment segment_num="23" angle="${angle_step * 22}"/>
+    <xacro:ring_segment segment_num="24" angle="${angle_step * 23}"/>
+    <xacro:ring_segment segment_num="25" angle="${angle_step * 24}"/>
+    <xacro:ring_segment segment_num="26" angle="${angle_step * 25}"/>
+    <xacro:ring_segment segment_num="27" angle="${angle_step * 26}"/>
+    <xacro:ring_segment segment_num="28" angle="${angle_step * 27}"/>
+    <xacro:ring_segment segment_num="29" angle="${angle_step * 28}"/>
+    <xacro:ring_segment segment_num="30" angle="${angle_step * 29}"/>
+    <xacro:ring_segment segment_num="31" angle="${angle_step * 30}"/>
+    <xacro:ring_segment segment_num="32" angle="${angle_step * 31}"/>
+    <xacro:ring_segment segment_num="33" angle="${angle_step * 32}"/>
+    <xacro:ring_segment segment_num="34" angle="${angle_step * 33}"/>
+    <xacro:ring_segment segment_num="35" angle="${angle_step * 34}"/>
+    <xacro:ring_segment segment_num="36" angle="${angle_step * 35}"/>
+    <xacro:ring_segment segment_num="37" angle="${angle_step * 36}"/>
+    <xacro:ring_segment segment_num="38" angle="${angle_step * 37}"/>
+    <xacro:ring_segment segment_num="39" angle="${angle_step * 38}"/>
+    <xacro:ring_segment segment_num="40" angle="${angle_step * 39}"/>
+    <xacro:ring_segment segment_num="41" angle="${angle_step * 40}"/>
+    <xacro:ring_segment segment_num="42" angle="${angle_step * 41}"/>
+    <xacro:ring_segment segment_num="43" angle="${angle_step * 42}"/>
+    <xacro:ring_segment segment_num="44" angle="${angle_step * 43}"/>
+    <xacro:ring_segment segment_num="45" angle="${angle_step * 44}"/>
+    <xacro:ring_segment segment_num="46" angle="${angle_step * 45}"/>
+    <xacro:ring_segment segment_num="47" angle="${angle_step * 46}"/>
+    <xacro:ring_segment segment_num="48" angle="${angle_step * 47}"/>
+    <xacro:ring_segment segment_num="49" angle="${angle_step * 48}"/>
+    <xacro:ring_segment segment_num="50" angle="${angle_step * 49}"/>
+    <xacro:ring_segment segment_num="51" angle="${angle_step * 50}"/>
+    <xacro:ring_segment segment_num="52" angle="${angle_step * 51}"/>
+    <xacro:ring_segment segment_num="53" angle="${angle_step * 52}"/>
+    <xacro:ring_segment segment_num="54" angle="${angle_step * 53}"/>
+    <xacro:ring_segment segment_num="55" angle="${angle_step * 54}"/>
+    <xacro:ring_segment segment_num="56" angle="${angle_step * 55}"/>
+    <xacro:ring_segment segment_num="57" angle="${angle_step * 56}"/>
+    <xacro:ring_segment segment_num="58" angle="${angle_step * 57}"/>
+    <xacro:ring_segment segment_num="59" angle="${angle_step * 58}"/>
+    <xacro:ring_segment segment_num="60" angle="${angle_step * 59}"/>
+    <xacro:ring_segment segment_num="61" angle="${angle_step * 60}"/>
+    <xacro:ring_segment segment_num="62" angle="${angle_step * 61}"/>
+    <xacro:ring_segment segment_num="63" angle="${angle_step * 62}"/>
+    <xacro:ring_segment segment_num="64" angle="${angle_step * 63}"/>
+    <xacro:ring_segment segment_num="65" angle="${angle_step * 64}"/>
+    <xacro:ring_segment segment_num="66" angle="${angle_step * 65}"/>
+    <xacro:ring_segment segment_num="67" angle="${angle_step * 66}"/>
+    <xacro:ring_segment segment_num="68" angle="${angle_step * 67}"/>
+    <xacro:ring_segment segment_num="69" angle="${angle_step * 68}"/>
+    <xacro:ring_segment segment_num="70" angle="${angle_step * 69}"/>
+    <xacro:ring_segment segment_num="71" angle="${angle_step * 70}"/>
+    <xacro:ring_segment segment_num="72" angle="${angle_step * 71}"/>
+    <xacro:ring_segment segment_num="73" angle="${angle_step * 72}"/>
+    <xacro:ring_segment segment_num="74" angle="${angle_step * 73}"/>
+    <xacro:ring_segment segment_num="75" angle="${angle_step * 74}"/>
+    <xacro:ring_segment segment_num="76" angle="${angle_step * 75}"/>
+    <xacro:ring_segment segment_num="77" angle="${angle_step * 76}"/>
+    <xacro:ring_segment segment_num="78" angle="${angle_step * 77}"/>
+    <xacro:ring_segment segment_num="79" angle="${angle_step * 78}"/>
+    <xacro:ring_segment segment_num="80" angle="${angle_step * 79}"/>
+    <xacro:ring_segment segment_num="81" angle="${angle_step * 80}"/>
+    <xacro:ring_segment segment_num="82" angle="${angle_step * 81}"/>
+    <xacro:ring_segment segment_num="83" angle="${angle_step * 82}"/>
+    <xacro:ring_segment segment_num="84" angle="${angle_step * 83}"/>
+    <xacro:ring_segment segment_num="85" angle="${angle_step * 84}"/>
+    <xacro:ring_segment segment_num="86" angle="${angle_step * 85}"/>
+    <xacro:ring_segment segment_num="87" angle="${angle_step * 86}"/>
+    <xacro:ring_segment segment_num="88" angle="${angle_step * 87}"/>
+    <xacro:ring_segment segment_num="89" angle="${angle_step * 88}"/>
+    <xacro:ring_segment segment_num="90" angle="${angle_step * 89}"/>
+
+  </xacro:macro>
+
+</robot>

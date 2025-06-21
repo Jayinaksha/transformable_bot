@@ -1,0 +1,469 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="transformable_bot">
+    <!-- Robot Properties -->
+    <xacro:property name="body_length" value="0.55"/>
+    <xacro:property name="body_width" value="0.55"/>
+    <xacro:property name="body_height" value="0.12"/>
+
+    <!-- Arm Properties -->
+    <xacro:property name="arm_length" value="0.15"/>
+    <xacro:property name="arm_width"  value="0.025"/>
+    <xacro:property name="arm_height" value="0.020"/>
+    <xacro:property name="arm_offset" value="0.35"/>
+
+    <!-- PROPELLER PROPERTIES -->
+    <xacro:property name="blade_length" value="0.152"/>
+    <xacro:property name="blade_width" value="0.015"/>
+    <xacro:property name="blade_thickness" value="0.004"/>
+    <xacro:property name="hub_radius" value="0.015"/>
+    <xacro:property name="hub_height" value="0.008"/>
+
+    <!-- Servo Properties -->
+    <xacro:property name="servo_radius" value="0.035"/>
+    <xacro:property name="servo_length" value="0.070"/>
+
+
+    <!-- Motor Properties -->
+    <xacro:property name="motor_radius" value="0.040"/>
+    <xacro:property name="motor_length" value="0.060"/>
+
+    <!-- Gimbal Properties -->
+    <xacro:property name="gimbal_range_x" value="1.5708"/>
+    <xacro:property name="gimbal_range_y" value="1.5708"/>
+    <xacro:property name="motor_gimbal_radius" value="0.050"/>
+    <xacro:property name="motor_gimbal_height" value="0.040"/>
+
+    <!-- FIXED Propeller Macro -->
+    <xacro:macro name="propeller" params="name color">
+        <!-- Propeller Hub -->
+        <link name="${name}_hub">
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <cylinder radius="${hub_radius}" length="${hub_height}"/>
+                </geometry>
+                <material name="hub_material"/>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <cylinder radius="${hub_radius}" length="${hub_height}"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <mass value="0.05"/>
+                <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+            </inertial>
+        </link>
+
+        <!-- Blade 1 -->
+        <link name="${name}_blade1">
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <box size="${blade_length} ${blade_width} ${blade_thickness}"/>
+                </geometry>
+                <material name="${color}"/>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <box size="${blade_length} ${blade_width} ${blade_thickness}"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <mass value="0.002"/>
+                <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+            </inertial>
+        </link>
+        
+        <!-- Blade 2 -->
+        <link name="${name}_blade2">
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <box size="${blade_length} ${blade_width} ${blade_thickness}"/>
+                </geometry>
+                <material name="${color}"/>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <box size="${blade_length} ${blade_width} ${blade_thickness}"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <mass value="0.002"/>
+                <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+            </inertial>
+        </link>
+
+        <!-- Joint positioning -->
+        <joint name="${name}_hub_to_blade1" type="fixed">
+            <parent link="${name}_hub"/>
+            <child link="${name}_blade1"/>
+            <origin xyz="${blade_length/2} 0 0" rpy="0 0 0"/>
+        </joint>
+
+        <joint name="${name}_hub_to_blade2" type="fixed">
+            <parent link="${name}_hub"/>
+            <child link="${name}_blade2"/>
+            <origin xyz="${-blade_length/2} 0 0" rpy="0 0 ${pi}"/>
+        </joint>
+    </xacro:macro>
+
+    <!-- Arm Assembly Macro -->
+    <xacro:macro name="arm_assembly" params="name angle color offset_value_x offset_value_y">
+        <!-- Y-axis Servo -->
+        <link name="${name}_y_servo">
+            <visual>
+                <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+                <geometry>
+                    <cylinder radius="${servo_radius}" length="${servo_length}"/>
+                </geometry>
+                <material name="servo_material"/>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+                <geometry>
+                    <cylinder radius="${servo_radius}" length="${servo_length}"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <mass value="0.08"/>
+                <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+            </inertial>
+        </link>
+
+        <!-- Main Arm Link -->
+        <link name="${name}_arm">
+            <visual>
+                <origin xyz="${arm_length/2} 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <box size="${arm_length} ${arm_width} ${arm_height}"/>
+                </geometry>
+                <material name="${color}"/>
+            </visual>
+            <collision>
+                <origin xyz="${arm_length/2} 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <box size="${arm_length} ${arm_width} ${arm_height}"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <origin xyz="${arm_length/2} 0 0" rpy="0 0 0"/>
+                <mass value="0.2"/>
+                <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+            </inertial>
+        </link>
+
+        <!-- Base to Y-Servo -->
+        <joint name="base_to_${name}_y_servo" type="fixed">
+            <parent link="base_link"/>
+            <child link="${name}_y_servo"/>
+            <origin xyz="${(arm_offset * cos(angle)) + offset_value_x} ${(arm_offset * sin(angle)) + offset_value_y} 0" rpy="0 0 ${angle}"/>
+        </joint>
+
+        <!-- Y-Servo to Arm -->
+        <joint name="${name}_y_servo_to_arm" type="revolute">
+            <parent link="${name}_y_servo"/>
+            <child link="${name}_arm"/>
+            <origin xyz="${servo_length/2 + 0.005} 0 0" rpy="0 0 0"/>
+            <axis xyz="0 1 0"/>
+            <limit lower="0" upper="${gimbal_range_y}" effort="20" velocity="1.0"/>
+            <dynamics damping="0.1" friction="0.05"/>
+        </joint>
+    </xacro:macro>
+
+    <!-- COMPLETELY FIXED Motor Gimbal Macro -->
+    <xacro:macro name="motor_gimbal" params="name arm_link color">
+        <!-- X-axis Servo -->
+        <link name="${name}_x_servo">
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <cylinder radius="${servo_radius * 0.9}" length="${servo_length * 0.8}"/>
+                </geometry>
+                <material name="servo_material"/>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <cylinder radius="${servo_radius * 0.9}" length="${servo_length * 0.8}"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <mass value="0.06"/>
+                <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+            </inertial>
+        </link>
+
+        <!-- Gimbal Base -->
+        <link name="${name}_gimbal_base">
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <cylinder radius="${motor_gimbal_radius}" length="${motor_gimbal_height}"/>
+                </geometry>
+                <material name="gimbal_material"/>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <cylinder radius="${motor_gimbal_radius}" length="${motor_gimbal_height}"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <mass value="0.05"/>
+                <inertia ixx="0.00005" ixy="0" ixz="0" iyy="0.00005" iyz="0" izz="0.00008"/>
+            </inertial>
+        </link>
+
+        <!-- Mini-Arm Extension -->
+        <link name="${name}_extension">
+            <visual>
+                <origin xyz="${arm_length/2} 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <box size="${arm_length} ${arm_width} ${arm_height}"/>
+                </geometry>
+                <material name="${color}"/>
+            </visual>
+            <collision>
+                <origin xyz="${arm_length/2} 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <box size="${arm_length} ${arm_width} ${arm_height}"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <origin xyz="${arm_length/8} 0 0" rpy="0 0 0"/>
+                <mass value="0.05"/>
+                <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+            </inertial>
+        </link>
+
+        <!-- Motor Hub-->
+         <link name="${name}_motor_hub">
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <cylinder radius="${5*motor_radius/4}" length="${motor_length/4}"/>
+                </geometry>
+                <material name="hub_material"/>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <cylinder radius="${5*motor_radius/4}" length="${motor_length/4}"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <mass value="0.05"/>
+                <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+            </inertial>
+        </link>
+
+        <!-- Motor -->
+        <link name="${name}_motor">
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <cylinder radius="${motor_radius}" length="${motor_length}"/>
+                </geometry>
+                <material name="motor_material"/>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <cylinder radius="${motor_radius}" length="${motor_length}"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <mass value="0.15"/>
+                <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+            </inertial>
+        </link>
+
+        <!-- FIXED JOINT CHAIN -->
+        <!-- 1. Arm to X-Servo -->
+        <joint name="${arm_link}_to_${name}_x_servo" type="fixed">
+            <parent link="${arm_link}"/>
+            <child link="${name}_x_servo"/>
+            <origin xyz="${arm_length} 0 0" rpy="0 ${pi/2} 0"/>
+        </joint>
+
+        <!-- 2. X-Servo to Gimbal -->
+        <joint name="${name}_x_servo_to_gimbal" type="revolute">
+            <parent link="${name}_x_servo"/>
+            <child link="${name}_gimbal_base"/>
+            <origin xyz="0 0 ${servo_length * 0.4}" rpy="0 0 0"/>
+            <axis xyz="0 0 1"/>
+            <limit lower="-${gimbal_range_x}" upper="${gimbal_range_x}" effort="20" velocity="1.0"/>
+            <dynamics damping="0.1" friction="0.05"/>
+        </joint>
+
+        <!-- 3. Gimbal to Extension -->
+        <joint name="${name}_gimbal_to_extension" type="fixed">
+            <parent link="${name}_gimbal_base"/>
+            <child link="${name}_extension"/>
+            <origin xyz="0 0 ${motor_gimbal_height/2}" rpy="0 -${pi/2} 0"/>
+        </joint>
+
+        <!-- 4. Extension to motor hub  -->
+        <joint name="${name}_extension_to_motor_hub" type="fixed">
+            <parent link="${name}_extension"/>
+            <child link="${name}_motor_hub"/>
+            <origin xyz="${arm_length - motor_radius} 0 ${arm_height/2 + motor_length/8}" rpy="0 0 0"/>
+        </joint>
+
+        <!-- 5. Extension to Motor -->
+        <joint name="${name}_motor_hub_to_motor" type="continuous">
+            <parent link="${name}_motor_hub"/>
+            <child link="${name}_motor"/>
+            <origin xyz="0 0 ${arm_height/2 + motor_length/4}" rpy="0 0 0"/>
+            <axis xyz="0 0 1"/>
+        </joint>
+    </xacro:macro>
+
+    <!-- Material Definitions -->
+    <material name="charcoal">
+        <color rgba="0.15 0.15 0.15 1.0"/>
+    </material>
+    <material name="dark_steel">
+        <color rgba="0.25 0.25 0.3 1.0"/>
+    </material>
+    <material name="carbon_fiber">
+        <color rgba="0.12 0.12 0.12 1.0"/>
+    </material>
+    <material name="propeller_cw">
+        <color rgba="0.2 0.9 0.9 0.8"/>
+    </material>
+    <material name="propeller_ccw">
+        <color rgba="0.8 0.8 0.8 0.8"/>
+    </material>
+    <material name="motor_material">
+        <color rgba="0.8 0.0 0.0 1.0"/>
+    </material>
+    <material name="servo_material">
+        <color rgba="0.9 0.7 0.0 1.0"/>
+    </material>
+    <material name="gimbal_material">
+        <color rgba="0.4 0.4 0.5 1.0"/>
+    </material>
+    <material name="hub_material">
+        <color rgba="0.1 0.1 0.1 1.0"/>
+    </material>
+
+    <!-- Main Body -->
+    <link name="base_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="${body_length} ${body_width} ${body_height}"/>
+            </geometry>
+            <material name="charcoal"/>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="${body_length} ${body_width} ${body_height}"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="2.0"/>
+            <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+        </inertial>
+    </link>
+
+    <!-- Create Arms -->
+    <xacro:arm_assembly name="front_right" angle="${pi/4}" color="dark_steel" offset_value_x = "0.0" offset_value_y = "0.0"/>
+    <xacro:arm_assembly name="back_right" angle="${3*pi/4}" color="carbon_fiber" offset_value_x = "0.0" offset_value_y = "0.0"/>
+    <xacro:arm_assembly name="back_left" angle="${5*pi/4}" color="dark_steel" offset_value_x = "0.0" offset_value_y = "0.0"/>
+    <xacro:arm_assembly name="front_left" angle="${7*pi/4}" color="carbon_fiber" offset_value_x = "0.0" offset_value_y = "0.0"/>
+
+    <!-- Motor Gimbals -->
+    <xacro:motor_gimbal name="front_right" arm_link="front_right_arm" color="dark_steel"/>
+    <xacro:motor_gimbal name="back_right" arm_link="back_right_arm" color="carbon_fiber"/>
+    <xacro:motor_gimbal name="back_left" arm_link="back_left_arm" color="dark_steel"/>
+    <xacro:motor_gimbal name="front_left" arm_link="front_left_arm" color="carbon_fiber"/>
+
+    <!-- Propellers -->
+    <xacro:propeller name="propeller_front_right" color="propeller_ccw"/>
+    <joint name="front_right_motor_to_propeller" type="fixed">
+        <parent link="front_right_motor"/>
+        <child link="propeller_front_right_hub"/>
+        <origin xyz="0 0 ${motor_length/2 + hub_height/2}" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+        <dynamics damping="0.01" friction="0.001"/>
+    </joint>
+    
+    <xacro:propeller name="propeller_back_right" color="propeller_cw"/>
+    <joint name="back_right_motor_to_propeller" type="fixed">
+        <parent link="back_right_motor"/>
+        <child link="propeller_back_right_hub"/>
+        <origin xyz="0 0 ${motor_length/2 + hub_height/2}" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+        <dynamics damping="0.01" friction="0.001"/>
+    </joint>    
+
+    <xacro:propeller name="propeller_back_left" color="propeller_ccw"/>
+    <joint name="back_left_motor_to_propeller" type="fixed">
+        <parent link="back_left_motor"/>
+        <child link="propeller_back_left_hub"/>
+        <origin xyz="0 0 ${motor_length/2 + hub_height/2}" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+        <dynamics damping="0.01" friction="0.001"/>
+    </joint>  
+    
+    <xacro:propeller name="propeller_front_left" color="propeller_cw"/>
+    <joint name="front_left_motor_to_propeller" type="fixed">
+        <parent link="front_left_motor"/>
+        <child link="propeller_front_left_hub"/>
+        <origin xyz="0 0 ${motor_length/2 + hub_height/2}" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+        <dynamics damping="0.01" friction="0.001"/>
+    </joint>
+    
+    <xacro:include filename="$(find transformable_bot)/urdf/ring_system.urdf.xacro"/>
+
+ <xacro:include filename="$(find transformable_bot)/urdf/ring_attached.urdf.xacro"/>
+
+  
+  <!-- Include Mode Switch Plugin Configuration -->
+  <xacro:include filename="$(find transformable_bot)/urdf/mode_switch_plugin.urdf.xacro"/>
+  <!-- Include Servo and Motor Plugin Configuration -->
+  <xacro:include filename="$(find transformable_bot)/urdf/servo_motor_plugins.urdf.xacro"/>
+
+ 
+
+  <!-- attach elevated ring+rods to each propeller hub -->
+  <!-- here offset_z="0.05" lifts the ring about 5 cm above the propeller -->
+  <xacro:ring_attached 
+    name="ring_attach_front_right" 
+    parent_link="propeller_front_right_hub" 
+    offset_x="0" offset_y="0" offset_z="0.0"/>
+
+  <xacro:ring_attached 
+    name="ring_attach_front_left" 
+    parent_link="propeller_front_left_hub" 
+    offset_x="0" offset_y="0" offset_z="${hub_height/2}"/>
+
+  <xacro:ring_attached 
+    name="ring_attach_back_right" 
+    parent_link="propeller_back_right_hub" 
+    offset_x="0" offset_y="0" offset_z="${hub_height/2}"/>
+
+  <xacro:ring_attached 
+    name="ring_attach_back_left" 
+    parent_link="propeller_back_left_hub" 
+    offset_x="0" offset_y="0" offset_z="${hub_height/2}"/>
+
+</robot>

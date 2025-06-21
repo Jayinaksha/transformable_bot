@@ -1,0 +1,36 @@
+
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "colcon build",
+            "type": "shell",
+            "command": "colcon",
+            "args": ["build", "--packages-select", "transformable_bot"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "source workspace",
+            "type": "shell",
+            "command": "source",
+            "args": ["install/setup.bash"],
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        }
+    ]
+}
